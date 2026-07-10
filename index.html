@@ -15,6 +15,7 @@ body{font-family:'Helvetica Neue',Arial,sans-serif;background:#ffffff;color:#1a1
              min-width:230px;gap:10px}
 .hero-title{color:#fff;font-size:28px;font-weight:800;letter-spacing:1px;text-transform:uppercase;line-height:1.15}
 .hero-subtitle{color:#e8c968;font-size:22px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+.hero-static-msg{color:#eee;font-size:16px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-top:10px;text-align:center}
 .countdown{display:flex;align-items:baseline;justify-content:center;gap:18px;flex-wrap:wrap}
 .countdown-label{color:#eee;font-size:15px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-right:2px}
 .cbox{display:flex;align-items:baseline;gap:4px}
@@ -124,6 +125,7 @@ footer{text-align:center;padding:24px;font-size:11px;color:#999;border-top:1px s
   .hero-center{min-width:100%;order:1}
   .hero-title{font-size:19px}
   .hero-subtitle{font-size:16px}
+  .hero-static-msg{font-size:13px;order:2;width:100%}
   .countdown{gap:10px;order:2;width:100%;justify-content:center}
   .countdown-label{font-size:13px}
   .cbox .num{font-size:22px}
@@ -155,7 +157,8 @@ footer{text-align:center;padding:24px;font-size:11px;color:#999;border-top:1px s
   <div class="hero-center">
     <div class="hero-title">Temporada de Sandalias</div>
     <div class="hero-subtitle">Hasta el 60% OFF</div>
-    <div class="countdown">
+    <div class="hero-static-msg" id="hero-static-msg">Hasta Agosto 15 2026 o hasta agotar existencias</div>
+    <div class="countdown" id="countdown" style="display:none">
       <span class="countdown-label">Faltan</span>
       <div class="cbox"><span class="num" id="cd-d">00</span><span class="lbl">d</span></div>
       <div class="cbox"><span class="num" id="cd-h">00</span><span class="lbl">h</span></div>
@@ -319,10 +322,19 @@ document.addEventListener('keydown', function(e){
     var h=Math.floor(diff%864e5/36e5);
     var m=Math.floor(diff%36e5/6e4);
     var s=Math.floor(diff%6e4/1000);
-    document.getElementById('cd-d').textContent=pad(d);
-    document.getElementById('cd-h').textContent=pad(h);
-    document.getElementById('cd-m').textContent=pad(m);
-    document.getElementById('cd-s').textContent=pad(s);
+    // Mientras falten 30 días o más se muestra el mensaje fijo con la fecha;
+    // dentro de los últimos 30 días se activa el contador para generar urgencia.
+    if(d >= 30){
+      document.getElementById('hero-static-msg').style.display='block';
+      document.getElementById('countdown').style.display='none';
+    } else {
+      document.getElementById('hero-static-msg').style.display='none';
+      document.getElementById('countdown').style.display='flex';
+      document.getElementById('cd-d').textContent=pad(d);
+      document.getElementById('cd-h').textContent=pad(h);
+      document.getElementById('cd-m').textContent=pad(m);
+      document.getElementById('cd-s').textContent=pad(s);
+    }
   }
   tick();
   var timer=setInterval(tick,1000);
